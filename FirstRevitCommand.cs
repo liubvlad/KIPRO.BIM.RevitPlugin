@@ -9,7 +9,7 @@
     [TransactionAttribute(TransactionMode.Manual)]
     public class FirstRevitCommand : IExternalCommand
     {
-        static AddInId addinId = new AddInId(new Guid("CDE4EA5A-2933-430B-926B-82BEA5E3A069"));
+        //static AddInId addinId = new AddInId(new Guid("CDE4EA5A-2933-430B-926B-82BEA5E3A069"));
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
