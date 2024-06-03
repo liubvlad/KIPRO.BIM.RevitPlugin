@@ -1,11 +1,12 @@
 ﻿namespace KIPRO.BIM.RevitPlugin
 {
+    using Autodesk.Revit.Attributes;
     using Autodesk.Revit.DB;
     using Autodesk.Revit.UI;
     using Autodesk.Revit.UI.Selection;
     using System;
 
-    [Autodesk.Revit.Attributes.TransactionAttribute(Autodesk.Revit.Attributes.TransactionMode.Manual)]
+    [TransactionAttribute(TransactionMode.Manual)]
     public class FirstRevitCommand : IExternalCommand
     {
         static AddInId addinId = new AddInId(new Guid("CDE4EA5A-2933-430B-926B-82BEA5E3A069"));

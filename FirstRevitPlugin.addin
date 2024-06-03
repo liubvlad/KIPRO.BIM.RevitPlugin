@@ -1,10 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <RevitAddIns>
-	<AddIn Type="Command">
-		<Name>FirstRevitCommand</Name>
+	<AddIn Type="Application">
+		<Name>FirstRevitPlugin</Name>
 		<Assembly>KIPRO.BIM.RevitPlugin.dll</Assembly>
 		<AddInId>CDE4EA5A-2933-430B-926B-82BEA5E3A069</AddInId>
-		<FullClassName>KIPRO.BIM.RevitPlugin.FirstRevitCommand</FullClassName>
-		<Text>Тестовый плагин кейс 5</Text>
+		<Text>Плагин кейс KiPRO</Text>
 		<VendorId>MyId</VendorId>
 		<VendorDescription></VendorDescription>
 	</AddIn>
