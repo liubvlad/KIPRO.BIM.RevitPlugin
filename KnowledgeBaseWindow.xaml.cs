@@ -6,25 +6,49 @@
     using System.IO;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Documents;
-    using System.Windows.Markup;
 
     public partial class KnowledgeBaseWindow : Window
     {
-        private string baseDirectory = @"C:\Logs\LocalInstructions";
+        private UserSettingsHelper _userSettingsHelper;
 
         public KnowledgeBaseWindow()
         {
             InitializeComponent();
 
-            InitializeDocsFilesList();
+            _userSettingsHelper = UserSettingsHelper.Load();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Локальная папка с инструкциями
+            string instructionsDirectory = @"C:\Logs\LocalInstructions";
+
+            // Получение всех файлов .doc в директории и поддиректориях
+            string[] files = Directory.GetFiles(instructionsDirectory, "*.doc", SearchOption.AllDirectories);
+
+            // Открытие первого найденного файла (можно адаптировать для выбора файла пользователем)
+            if (files.Length > 0)
+            {
+                /*Process.Start(new ProcessStartInfo
+                {
+                    FileName = files[0],
+                    UseShellExecute = true
+                });*/
+
+                InitializeDocsFilesList();
+            }
+            else
+            {
+                TaskDialog.Show("База знаний", "Не найдено файлов инструкций.");
+                this.Close();
+            }
         }
 
         [Obsolete("Temporery Solution")]
         private void InitializeDocsFilesList()
         {
             var filesList = new List<string>();
-            var directories = Directory.GetDirectories(baseDirectory);
+            var directories = Directory.GetDirectories(_userSettingsHelper.KnowledgeBaseDirectory);
 
             foreach (var dir in directories)
             {
@@ -48,7 +72,8 @@
                 string directory = parts[0].Trim();
                 string fileName = parts[1].Trim();
 
-                string filePath = Path.Combine(baseDirectory, directory, fileName);
+                // TODO исп. доп класс для хранения полного пути
+                string filePath = Path.Combine(_userSettingsHelper.KnowledgeBaseDirectory, directory, fileName);
                 if (File.Exists(filePath))
                 {
                     string fileContent = File.ReadAllText(filePath);
@@ -61,5 +86,7 @@
                 }
             }
         }
+
+        
     }
 }

@@ -22,28 +22,8 @@
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Локальная папка с инструкциями
-            string instructionsDirectory = @"C:\Logs\LocalInstructions";
-
-            // Получение всех файлов .doc в директории и поддиректориях
-            string[] files = Directory.GetFiles(instructionsDirectory, "*.doc", SearchOption.AllDirectories);
-
-            // Открытие первого найденного файла (можно адаптировать для выбора файла пользователем)
-            if (files.Length > 0)
-            {
-                /*Process.Start(new ProcessStartInfo
-                {
-                    FileName = files[0],
-                    UseShellExecute = true
-                });*/
-
-                KnowledgeBaseWindow knowledgeBaseWindow = new KnowledgeBaseWindow();
-                knowledgeBaseWindow.ShowDialog();
-            }
-            else
-            {
-                TaskDialog.Show("Knowledge Base", "No instruction files found.");
-            }
+            KnowledgeBaseWindow knowledgeBaseWindow = new KnowledgeBaseWindow();
+            knowledgeBaseWindow.ShowDialog();
 
             return Result.Succeeded;
         }
@@ -55,13 +35,15 @@
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            var logDirectory = UserSettingsHelper.Load().LogDirectory;
+
             Document doc = commandData.Application.ActiveUIDocument.Document;
             
             string projectName = doc.Title;
             string userName = Environment.UserName;
             
             string logFileName = $"{projectName}_{userName}_{DateTime.Now:yyyy-MM-dd}.log";
-            string filePath = Path.Combine(@"C:\Logs", logFileName);
+            string filePath = Path.Combine(logDirectory, logFileName);
             if (!File.Exists(filePath))
             {
                 TaskDialog.Show("О логах", "Файл логирования отсутствует");
@@ -75,6 +57,18 @@
         }
     }
 
+    [Transaction(TransactionMode.Manual)]
+    public class SettingsCommand : IExternalCommand
+    {
+        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        {
+            Document doc = commandData.Application.ActiveUIDocument.Document;
+
+            TaskDialog.Show("Настройки", "Тут будут настройки");
+
+            return Result.Succeeded;
+        }
+    }
     /*
     public Result PickUpExample(ExternalCommandData commandData, ref string message, ElementSet elements)
     {

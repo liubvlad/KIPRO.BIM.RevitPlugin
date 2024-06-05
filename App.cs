@@ -9,14 +9,19 @@
     using System.Windows.Media.Imaging;
     using KIPRO.BIM.RevitPlugin.Properties;
     using System.Drawing;
+    using System.Linq;
+    using System.Text;
 
     public class App : IExternalApplication
     {
         static AddInId addinId = new AddInId(new Guid("CDE4EA5A-2933-430B-926B-82BEA5E3A069"));
-        private string logDirectory = @"C:\Logs\";
+        private string logDirectory;
 
         public Result OnStartup(UIControlledApplication application)
         {
+            // Загрузка пути из файла настроек
+            logDirectory = UserSettingsHelper.Load().LogDirectory;
+
             // Сбор логов при запуске Revit
             if (!Directory.Exists(logDirectory)) Directory.CreateDirectory(logDirectory);
             application.ControlledApplication.DocumentChanged += LoggingOnDocumentChanged;
@@ -68,7 +73,7 @@
                 "KIPRO.BIM.RevitPlugin.KnowledgeBaseCommand",
                 Resources.icon_knowledge);
 
-            // Добавление кнопки для ручного сбора логов
+            // Добавление кнопки для проверки собранных логов
             AddButton(
                 panel,
                 "CollectLogsButton",
@@ -76,6 +81,15 @@
                 assemblyPath,
                 "KIPRO.BIM.RevitPlugin.CollectLogsCommand",
                 Resources.icon_logs);
+
+            // Добавление кнопки настроек
+            AddButton(
+                panel,
+                "SettingsButton",
+                "Настройки",
+                assemblyPath,
+                "KIPRO.BIM.RevitPlugin.SettingsCommand",
+                Resources.icon_settings);
         }
 
         private void AddButton(
@@ -109,24 +123,23 @@
             ///string userName = Environment.UserName;
             var timespan = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-            foreach (ElementId id in e.GetModifiedElementIds())
-            {
-                Element element = doc.GetElement(id);
-                if (element != null)
-                {
-                    string elementInfo = $"id={element.Id}, {element.Name}";
-                    LogChange(projectName, timespan, "Mod", userName, elementInfo);
-                }
-            }
 
             foreach (ElementId id in e.GetAddedElementIds())
             {
                 Element element = doc.GetElement(id);
-                if (element != null)
-                {
-                    string elementInfo = $"id={element.Id}, {element.Name}";
-                    LogChange(projectName, timespan, "Add", userName, elementInfo);
-                }
+                if (element == null) continue;
+
+                string elementInfo = GetElementInfo(element);
+                LogChange(projectName, timespan, "Add", userName, elementInfo);
+            }
+
+            foreach (ElementId id in e.GetModifiedElementIds())
+            {
+                Element element = doc.GetElement(id);
+                if (element == null) continue;
+
+                string elementInfo = GetElementInfo(element);
+                LogChange(projectName, timespan, "Mod", userName, elementInfo);
             }
 
             foreach (ElementId id in e.GetDeletedElementIds())
@@ -134,6 +147,41 @@
                 string elementInfo = $"id={id}";
                 LogChange(projectName, timespan, "Del", userName, elementInfo);
             }
+        }
+
+        private string GetElementInfo(Element element)
+        {
+            // Закоментировано из-за излишек информации
+            /*
+            StringBuilder parametersInfo = new StringBuilder();
+            foreach (Parameter param in element.Parameters)
+            {
+                string paramName = param.Definition.Name;
+                string paramValue = param.AsValueString(); // AsValueString() возвращает значение параметра в виде строки
+                parametersInfo.Append($"{paramName}={paramValue}; ");
+            }*/
+
+            string locationInfo = "None";
+            if (element.Location is LocationPoint locationPoint)
+            {
+                XYZ point = locationPoint.Point;
+                locationInfo = $"Point(X={point.X}, Y={point.Y}, Z={point.Z})";
+            }
+            else if (element.Location is LocationCurve locationCurve)
+            {
+                Curve curve = locationCurve.Curve;
+                locationInfo = $"Curve(X0={curve.GetEndPoint(0).X}, Y0={curve.GetEndPoint(0).Y}, Z0={curve.GetEndPoint(0).Z}, " +
+                               $"X1={curve.GetEndPoint(1).X}, Y1={curve.GetEndPoint(1).Y}, Z1={curve.GetEndPoint(1).Z})";
+            }
+
+            string elementInfo = 
+                $"Id={element.Id.IntegerValue}: " +
+                $"Name={element.Name}," +
+                $"Category={element.Category.Name}," +
+                ///$"Parameters={parametersInfo}, " +
+                $"Location={locationInfo}";
+
+            return elementInfo;
         }
 
         private void LogChange(
