@@ -62,9 +62,8 @@
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            TaskDialog.Show("Настройки", "Тут будут настройки");
+            SettingsWindow settingsWindow = new SettingsWindow();
+            settingsWindow.ShowDialog();
 
             return Result.Succeeded;
         }

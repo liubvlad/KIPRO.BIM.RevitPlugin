@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="KIPRO.BIM.RevitPlugin.SettingsWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:KIPRO.BIM.RevitPlugin"
+             mc:Ignorable="d" 
+             Height="200" Width="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Директория логов:" Grid.Row="0" Grid.Column="0" Margin="10"/>
+        <TextBox Name="LogDirectoryTextBox" Grid.Row="0" Grid.Column="1" Margin="10"/>
+        <Button Name="LogDirectoryButton" Content="..." Grid.Row="0" Grid.Column="2" Margin="5 10" Padding="5 0" Click="LogDirectoryButton_Click"/>
+
+        <Label Content="Директория базы знаний:" Grid.Row="1" Grid.Column="0" Margin="10"/>
+        <TextBox Name="KnowledgeBaseDirectoryTextBox" Grid.Row="1" Grid.Column="1" Margin="10"/>
+        <Button Name="KnowledgeBaseDirectoryButton" Content="..." Grid.Row="1" Grid.Column="2" Margin="5 10" Padding="5 0" Click="KnowledgeBaseDirectoryButton_Click"/>
+
+        <Label Content="Директория семейств:" Grid.Row="2" Grid.Column="0" Margin="10"/>
+        <TextBox Name="FamilyDirectoryTextBox" Grid.Row="2" Grid.Column="1" Margin="10"/>
+        <Button Name="FamilyDirectoryButton" Content="..." Grid.Row="2" Grid.Column="2" Margin="5 10" Padding="5 0" Click="FamilyDirectoryButton_Click"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="3" Grid.ColumnSpan="3" Margin="10">
+            <Button Name="ResetButton" Content="По умолчанию" Width="100" Margin="5" Click="ResetButton_Click"/>
+            <Button Name="SaveButton" Content="Сохранить" Width="100" Margin="5" Click="SaveButton_Click"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
