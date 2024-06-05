@@ -3,7 +3,6 @@
     using Autodesk.Revit.Attributes;
     using Autodesk.Revit.DB;
     using Autodesk.Revit.UI;
-    using System.Diagnostics;
     using System.IO;
     using System;
 
@@ -12,7 +11,9 @@
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            Process.Start("https://link_to_family_database");
+            FamiliesWindow familiesWindow = new FamiliesWindow();
+            familiesWindow.ShowDialog();
+
             return Result.Succeeded;
         }
     }

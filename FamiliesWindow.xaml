@@ -1,0 +1,24 @@
+﻿<Window x:Class="KIPRO.BIM.RevitPlugin.FamiliesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:KIPRO.BIM.RevitPlugin"
+        mc:Ignorable="d" 
+        Title="Семейства"
+        WindowStartupLocation="CenterScreen"
+        d:DesignHeight="450" d:DesignWidth="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TreeView Name="EquipmentTreeView" Margin="5" Grid.Row="0"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Margin="10">
+            <Button Name="PlaceButton" Content="Разместить в модели" Width="180" Margin="10" Padding="0 10" Click="PlaceButton_Click"/>
+            <Button Name="UpdateButton" Content="Обновить все семейства" Width="180" Margin="10" Padding="0 10" Click="UpdateButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
