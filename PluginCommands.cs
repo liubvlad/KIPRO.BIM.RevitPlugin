@@ -37,16 +37,16 @@
             
             string projectName = doc.Title;
             string userName = Environment.UserName;
+            
             string logFileName = $"{projectName}_{userName}_{DateTime.Now:yyyy-MM-dd}.log";
-
             string filePath = Path.Combine(@"C:\Logs", logFileName);
-            if (!File.Exists(logFileName))
+            if (!File.Exists(filePath))
             {
                 TaskDialog.Show("О логах", "Файл логирования отсутствует");
             }
             else
             {
-                TaskDialog.Show("О логах", $"Файл содержит {File.ReadAllLines(logFileName).Length} записей логирования");
+                TaskDialog.Show("О логах", $"Файл содержит {File.ReadAllLines(filePath).Length} записей логирования");
             }
 
             return Result.Succeeded;
