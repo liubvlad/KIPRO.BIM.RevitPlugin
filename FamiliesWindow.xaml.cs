@@ -21,17 +21,19 @@
 
                 var selectedItem = EquipmentTreeView.SelectedItem as TreeViewItem;
                 TaskDialog.Show("Окно выбора семейств", $"Размещаем: {selectedItem.Header}");
+                this.Close();
             }
             else
             {
                 TaskDialog.Show("Окно выбора семейств", "Выберите элемент для размещения.");
+                this.Close();
             }
         }
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO Логика для обновления всех семейств
-            TaskDialog.Show("Окно выбора семейств", "Обновляем все семейства.");
+            /**/ TaskDialog.Show("Окно выбора семейств", "Обновляем все семейства.");
         }
 
         #region Заготовка дерева по умолчанию
