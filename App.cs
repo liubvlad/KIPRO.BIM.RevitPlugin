@@ -1,25 +1,43 @@
 ﻿namespace KIPRO.BIM.RevitPlugin
 {
     using Autodesk.Revit.UI;
-    using Autodesk.Revit.ApplicationServices;
     using System;
     using System.Reflection;
     using Autodesk.Revit.DB;
     using Autodesk.Revit.DB.Events;
     using System.IO;
     using System.Windows.Media.Imaging;
+    using KIPRO.BIM.RevitPlugin.Properties;
+    using System.Drawing;
 
     public class App : IExternalApplication
     {
         static AddInId addinId = new AddInId(new Guid("CDE4EA5A-2933-430B-926B-82BEA5E3A069"));
+        private string logDirectory = @"C:\Logs\";
 
         public Result OnStartup(UIControlledApplication application)
         {
             // Сбор логов при запуске Revit
-            CollectLogs();
+            if (!Directory.Exists(logDirectory)) Directory.CreateDirectory(logDirectory);
+            application.ControlledApplication.DocumentChanged += LoggingOnDocumentChanged;
 
+            // Создание панели с кнопочками
+            CreateUIPanel(application);
 
-            // Создание панели
+            return Result.Succeeded;
+        }
+
+        public Result OnShutdown(UIControlledApplication application)
+        {
+            //application.ControlledApplication.ApplicationInitialized -= OnApplicationInitialized;
+
+            application.ControlledApplication.DocumentChanged -= LoggingOnDocumentChanged;
+
+            return Result.Succeeded;
+        }
+
+        private void CreateUIPanel(UIControlledApplication application)
+        {
             string tabName = "KiPRO";
             try
             {
@@ -33,71 +51,121 @@
             string assemblyPath = Assembly.GetExecutingAssembly().Location;
 
             // Добавление кнопки для обращения к базе семейств
-            AddButton(panel, "FamilyDatabaseButton", "Обращение к базе семейств", assemblyPath, "KIPRO.BIM.RevitPlugin.FamilyDatabaseCommand", "family_database_icon.png");
+            AddButton(
+                panel,
+                "FamilyDatabaseButton",
+                "Обращение к базе семейств",
+                assemblyPath,
+                "KIPRO.BIM.RevitPlugin.FamilyDatabaseCommand",
+                Resources.icon_family);
 
             // Добавление кнопки для обращения к базе знаний
-            AddButton(panel, "KnowledgeBaseButton", "Обращение к базе знаний", assemblyPath, "KIPRO.BIM.RevitPlugin.KnowledgeBaseCommand", "knowledge_base_icon.png");
+            AddButton(
+                panel,
+                "KnowledgeBaseButton",
+                "Обращение к базе знаний",
+                assemblyPath,
+                "KIPRO.BIM.RevitPlugin.KnowledgeBaseCommand",
+                Resources.icon_knowledge);
 
             // Добавление кнопки для ручного сбора логов
-            AddButton(panel, "CollectLogsButton", "Сбор логов", assemblyPath, "KIPRO.BIM.RevitPlugin.CollectLogsCommand", "collect_logs_icon.png");
-
-
-            return Result.Succeeded;
+            AddButton(
+                panel,
+                "CollectLogsButton",
+                "Сбор логов",
+                assemblyPath,
+                "KIPRO.BIM.RevitPlugin.CollectLogsCommand",
+                Resources.icon_logs);
         }
 
-        private void AddButton(RibbonPanel panel, string buttonName, string buttonText, string assemblyPath, string className, string iconName)
+        private void AddButton(
+            RibbonPanel panel,
+            string buttonName,
+            string buttonText,
+            string assemblyPath,
+            string className,
+            Bitmap resourceIconName)
         {
-            string iconPath = Path.Combine(Path.GetDirectoryName(assemblyPath), "Resources", iconName);
             PushButtonData buttonData = new PushButtonData(buttonName, buttonText, assemblyPath, className);
 
-            // Проверяем, существует ли файл иконки
-            if (File.Exists(iconPath))
+            try
             {
-                Uri iconUri = new Uri(iconPath, UriKind.Absolute);
-                BitmapImage iconImage = new BitmapImage(iconUri);
-                buttonData.Image = ResizeImage(iconImage, 16, 16);
-                buttonData.LargeImage = ResizeImage(iconImage, 32, 32);
+                buttonData.Image = LoadBitmapImageFromResources(resourceIconName, 16, 16);
+                buttonData.LargeImage = LoadBitmapImageFromResources(resourceIconName, 24, 24);
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show("Set image error!", ex.Message);
             }
 
             panel.AddItem(buttonData);
         }
 
-        public Result OnShutdown(UIControlledApplication application)
+        private void LoggingOnDocumentChanged(object sender, DocumentChangedEventArgs e)
         {
-            //application.ControlledApplication.ApplicationInitialized -= OnApplicationInitialized;
-            return Result.Succeeded;
-        }
+            Document doc = e.GetDocument();
+            string projectName = doc.Title;
+            string userName = doc.Application.Username;
+            ///string userName = Environment.UserName;
+            var timespan = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
-
-        private void CollectLogs()
-        {
-            // Логика сбора логов
-            string userName = Environment.UserName;
-            string projectName = "ProjectName"; // Здесь нужно получить реальное имя проекта
-            string date = DateTime.Now.ToString("yyyyMMdd");
-            string logFileName = $"{projectName}_{userName}_{date}.init";
-
-            // Путь для сохранения логов
-            string logDirectory = @"C:\Logs"; // Здесь нужно предусмотреть настройку пути
-            if (!Directory.Exists(logDirectory))
+            foreach (ElementId id in e.GetModifiedElementIds())
             {
-                Directory.CreateDirectory(logDirectory);
+                Element element = doc.GetElement(id);
+                if (element != null)
+                {
+                    string elementInfo = $"id={element.Id}, {element.Name}";
+                    LogChange(projectName, timespan, "Mod", userName, elementInfo);
+                }
             }
 
-            string logFilePath = Path.Combine(logDirectory, logFileName);
-            File.WriteAllText(logFilePath, "Log init"); // Здесь нужно собрать реальные логи
+            foreach (ElementId id in e.GetAddedElementIds())
+            {
+                Element element = doc.GetElement(id);
+                if (element != null)
+                {
+                    string elementInfo = $"id={element.Id}, {element.Name}";
+                    LogChange(projectName, timespan, "Add", userName, elementInfo);
+                }
+            }
+
+            foreach (ElementId id in e.GetDeletedElementIds())
+            {
+                string elementInfo = $"id={id}";
+                LogChange(projectName, timespan, "Del", userName, elementInfo);
+            }
         }
 
-        private BitmapImage ResizeImage(BitmapImage originalImage, int width, int height)
+        private void LogChange(
+            string projectName,
+            string datetime,
+            string type,
+            string userName,
+            string elementInfo)
         {
-            // Создание нового изображения с заданными размерами
-            BitmapImage resizedImage = new BitmapImage();
-            resizedImage.BeginInit();
-            resizedImage.UriSource = originalImage.UriSource;
-            resizedImage.DecodePixelWidth = width;
-            resizedImage.DecodePixelHeight = height;
-            resizedImage.EndInit();
-            return resizedImage;
+            string logFileName = $"{projectName}_{userName}_{DateTime.Now:yyyy-MM-dd}.log";
+
+            string logEntry = $"{datetime},{type},{userName},{elementInfo}";
+            File.AppendAllText(Path.Combine(logDirectory, logFileName), logEntry + Environment.NewLine);
+        }
+
+        private BitmapImage LoadBitmapImageFromResources(Bitmap resource, int width, int height)
+        {
+            using (MemoryStream memory = new MemoryStream())
+            {
+                resource.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
+                memory.Position = 0;
+
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.DecodePixelWidth = width;
+                bitmapImage.DecodePixelHeight = height;
+                bitmapImage.EndInit();
+
+                return bitmapImage;
+            }
         }
     }
 }

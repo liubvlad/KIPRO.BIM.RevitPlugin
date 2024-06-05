@@ -33,29 +33,38 @@
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Получение текущего документа
             Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            // Получение названия проекта
+            
             string projectName = doc.Title;
-
             string userName = Environment.UserName;
-            string date = DateTime.Now.ToString("yyyyMMdd");
-            string logFileName = $"{projectName}_{userName}_{date}.log";
+            string logFileName = $"{projectName}_{userName}_{DateTime.Now:yyyy-MM-dd}.log";
 
-            // Путь для сохранения логов
-            string logDirectory = @"C:\Logs"; // Здесь нужно предусмотреть настройку пути
-            if (!Directory.Exists(logDirectory))
+            string filePath = Path.Combine(@"C:\Logs", logFileName);
+            if (!File.Exists(logFileName))
             {
-                Directory.CreateDirectory(logDirectory);
+                TaskDialog.Show("О логах", "Файл логирования отсутствует");
+            }
+            else
+            {
+                TaskDialog.Show("О логах", $"Файл содержит {File.ReadAllLines(logFileName).Length} записей логирования");
             }
 
-            string logFilePath = Path.Combine(logDirectory, logFileName);
-            File.WriteAllText(logFilePath, "Log content"); // Здесь нужно собрать реальные логи
-
-            TaskDialog.Show("Log Collection", "Log collected and saved at " + logFilePath);
             return Result.Succeeded;
         }
     }
-    
+
+    /*
+    public Result PickUpExample(ExternalCommandData commandData, ref string message, ElementSet elements)
+    {
+        UIDocument uidoc = commandData.Application.ActiveUIDocument;
+        Document doc = uidoc.Document;
+        Reference myRef = uidoc.Selection.PickObject(ObjectType.Element, "Выберите элемент для вывода его Id");
+        Element element = doc.GetElement(myRef);
+        ElementId id = element.Id;
+
+        TaskDialog.Show("Hello world!", id.ToString());
+
+        return Result.Succeeded;
+    }
+    */
 }
