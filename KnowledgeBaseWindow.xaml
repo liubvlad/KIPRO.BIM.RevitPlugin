@@ -1,11 +1,11 @@
 ﻿<Window x:Class="KIPRO.BIM.RevitPlugin.KnowledgeBaseWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="База знаний" Height="450" Width="800"
-        Loaded="Window_Loaded">
+        Title="База знаний" Height="720" Width="1200"
+        Loaded="Window_Loaded" FontSize="16">
     <Grid>
         <DockPanel>
-            <ListBox x:Name="FilesListBox" DockPanel.Dock="Left" Width="200" 
+            <ListBox x:Name="FilesListBox" DockPanel.Dock="Left" Width="250" 
                      SelectionChanged="FilesListBox_SelectionChanged">
             </ListBox>
             <TextBox x:Name="ContentTextBox" DockPanel.Dock="Right" Margin="5" 

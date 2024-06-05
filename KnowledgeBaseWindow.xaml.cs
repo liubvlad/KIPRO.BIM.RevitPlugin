@@ -40,13 +40,14 @@
                 }
                 else
                 {
-                    TaskDialog.Show("База знаний", "Не найдено файлов инструкций.");
+                    TaskDialog.Show("База знаний", "Не найдено файлов инструкций.\nОкно будет закрыто!");
                     this.Close();
                 }
             }
             catch (Exception ex)
             {
-                TaskDialog.Show("База знаний", $"Ошибка: {ex.Message}");
+                TaskDialog.Show("База знаний", $"Ошибка: {ex.Message}\nОкно будет закрыто!");
+                this.Close();
             }
         }
 
@@ -94,7 +95,11 @@
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                TaskDialog.Show("База знаний", $"Ошибка выбора инструкции: {ex.Message}\nОкно будет закрыто!");
+                this.Close();
+            }
         }
     }
 }
