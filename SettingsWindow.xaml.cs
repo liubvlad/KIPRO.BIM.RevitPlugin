@@ -38,6 +38,7 @@
             settings.Save();
 
             TaskDialog.Show("Настройки", "Настройки успешно сохранены!");
+            this.Close();
         }
 
         private void LogDirectoryButton_Click(object sender, RoutedEventArgs e)

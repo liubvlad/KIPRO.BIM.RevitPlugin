@@ -1,11 +1,11 @@
-﻿<UserControl x:Class="KIPRO.BIM.RevitPlugin.SettingsWindow"
+﻿<Window x:Class="KIPRO.BIM.RevitPlugin.SettingsWindow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:KIPRO.BIM.RevitPlugin"
-             mc:Ignorable="d" 
-             Height="200" Width="400">
+             mc:Ignorable="d" Title="Настройки"
+             Height="300" Width="450">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -37,4 +37,4 @@
             <Button Name="SaveButton" Content="Сохранить" Width="100" Margin="5" Click="SaveButton_Click"/>
         </StackPanel>
     </Grid>
-</UserControl>
+</Window>

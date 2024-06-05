@@ -8,7 +8,7 @@
     {
         private static readonly string ApplicationDirectoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "KIPRO.BIM.RevitPlugin");
         private static string settingsFilePath = Path.Combine(ApplicationDirectoryPath, "UserSettings.txt");
-        private static char spliter = ':';
+        private static char spliter = '|';
 
         public string LogDirectory { get; set; } = Path.Combine(ApplicationDirectoryPath, nameof(LogDirectory));
         public string KnowledgeBaseDirectory { get; set; } = Path.Combine(ApplicationDirectoryPath, nameof(KnowledgeBaseDirectory));
