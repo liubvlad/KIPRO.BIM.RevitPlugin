@@ -22,7 +22,29 @@
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            Process.Start("https://link_to_knowledge_base");
+            // Локальная папка с инструкциями
+            string instructionsDirectory = @"C:\Logs\LocalInstructions";
+
+            // Получение всех файлов .doc в директории и поддиректориях
+            string[] files = Directory.GetFiles(instructionsDirectory, "*.doc", SearchOption.AllDirectories);
+
+            // Открытие первого найденного файла (можно адаптировать для выбора файла пользователем)
+            if (files.Length > 0)
+            {
+                /*Process.Start(new ProcessStartInfo
+                {
+                    FileName = files[0],
+                    UseShellExecute = true
+                });*/
+
+                KnowledgeBaseWindow knowledgeBaseWindow = new KnowledgeBaseWindow();
+                knowledgeBaseWindow.ShowDialog();
+            }
+            else
+            {
+                TaskDialog.Show("Knowledge Base", "No instruction files found.");
+            }
+
             return Result.Succeeded;
         }
     }
