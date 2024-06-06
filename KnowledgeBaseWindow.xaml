@@ -6,9 +6,10 @@
         Loaded="Window_Loaded" FontSize="16">
     <Grid>
         <DockPanel>
-            <ListBox x:Name="FilesListBox" DockPanel.Dock="Left" Width="250" 
-                     SelectionChanged="FilesListBox_SelectionChanged">
-            </ListBox>
+            <TreeView x:Name="FilesTreeView" DockPanel.Dock="Left" Width="250" 
+                  SelectedItemChanged="FilesTreeView_SelectedItemChanged">
+            </TreeView>
+            
             <TextBox x:Name="ContentTextBox" DockPanel.Dock="Right" Margin="5" 
                      IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
         </DockPanel>

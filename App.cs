@@ -194,7 +194,7 @@
             string logFileName = $"{projectName}_{userName}_{DateTime.Now:yyyy-MM-dd}.log";
 
             string logEntry = $"{datetime},{type},{userName},{elementInfo}";
-            File.AppendAllText(Path.Combine(logDirectory, logFileName), logEntry + Environment.NewLine);
+            File.AppendAllText(Path.Combine(logDirectory, projectName, logFileName), logEntry + Environment.NewLine);
         }
 
         private BitmapImage LoadBitmapImageFromResources(Bitmap resource, int width, int height)

@@ -15,11 +15,11 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TreeView Name="EquipmentTreeView" Margin="5" Grid.Row="0"/>
+        <TreeView Name="FamiliesTreeView" Margin="5" Grid.Row="0"/>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Margin="10">
-            <Button Name="PlaceButton" Content="Разместить в модели" Width="180" Margin="10" Padding="0 10" Click="PlaceButton_Click"/>
-            <Button Name="UpdateButton" Content="Обновить все семейства" Width="180" Margin="10" Padding="0 10" Click="UpdateButton_Click"/>
+            <Button Name="PlaceButton" Content="Разместить в модели" Width="170" Margin="10" Padding="0 10" Click="PlaceButton_Click"/>
+            <Button Name="UpdateButton" Content="Обновить все семейства" Width="170" Margin="10" Padding="0 10" Click="UpdateButton_Click"/>
         </StackPanel>
     </Grid>
 </Window>

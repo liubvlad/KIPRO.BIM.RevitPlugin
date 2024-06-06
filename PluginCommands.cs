@@ -11,7 +11,7 @@
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            FamiliesWindow familiesWindow = new FamiliesWindow();
+            FamiliesWindow familiesWindow = new FamiliesWindow(commandData);
             familiesWindow.ShowDialog();
 
             return Result.Succeeded;
@@ -29,7 +29,6 @@
             return Result.Succeeded;
         }
     }
-
     
     [Transaction(TransactionMode.Manual)]
     public class CollectLogsCommand : IExternalCommand
@@ -44,7 +43,7 @@
             string userName = Environment.UserName;
             
             string logFileName = $"{projectName}_{userName}_{DateTime.Now:yyyy-MM-dd}.log";
-            string filePath = Path.Combine(logDirectory, logFileName);
+            string filePath = Path.Combine(logDirectory, projectName, logFileName);
             if (!File.Exists(filePath))
             {
                 TaskDialog.Show("О логах", "Файл логирования отсутствует");
@@ -69,6 +68,7 @@
             return Result.Succeeded;
         }
     }
+
     /*
     public Result PickUpExample(ExternalCommandData commandData, ref string message, ElementSet elements)
     {

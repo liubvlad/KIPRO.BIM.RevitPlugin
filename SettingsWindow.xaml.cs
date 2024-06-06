@@ -72,6 +72,7 @@
         {
             using (var dialog = new FolderBrowserDialog())
             {
+                dialog.ShowNewFolderButton = true; 
                 dialog.Description = "Укажите директорию";
                 dialog.ShowNewFolderButton = true;
                 DialogResult result = dialog.ShowDialog();

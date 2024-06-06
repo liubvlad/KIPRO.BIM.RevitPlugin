@@ -6,7 +6,7 @@
 		<AddInId>CDE4EA5A-2933-430B-926B-82BEA5E3A069</AddInId>
 		<FullClassName>KIPRO.BIM.RevitPlugin.App</FullClassName>
 		<Text>Плагин кейс KiPRO</Text>
-		<VendorId>Разработчики</VendorId>
-		<VendorDescription>Кейс 5 (KIPRO)</VendorDescription>
+		<VendorId>Беломестнов Павел, Евтушенко Кирилл, Любинецкий Владислав, Печуркин Владислав, Шестакова Ирина</VendorId>
+		<VendorDescription>Кейс-чемпионат: Кейс 5 BIM (KIPRO)</VendorDescription>
 	</AddIn>
 </RevitAddIns>
