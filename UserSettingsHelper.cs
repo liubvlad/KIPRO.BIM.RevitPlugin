@@ -14,7 +14,10 @@
         public string KnowledgeBaseDirectory { get; set; } = Path.Combine(ApplicationDirectoryPath, nameof(KnowledgeBaseDirectory));
         public string FamilyDirectory { get; set; } = Path.Combine(ApplicationDirectoryPath, nameof(FamilyDirectory));
 
-        // Чтение настроек из файла
+        /// <summary>
+        /// Чтение настроек из файла
+        /// </summary>
+        /// <returns>Объект настроек</returns>
         public static UserSettingsHelper Load()
         {
             var data = new UserSettingsHelper();
@@ -39,7 +42,9 @@
             return data;
         }
 
-        // Сохранение настроек в файл
+        /// <summary>
+        /// Сохранение настроек в файл
+        /// </summary>
         public void Save()
         {
             var lines = new List<string>
