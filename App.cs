@@ -9,21 +9,14 @@
     using System.Windows.Media.Imaging;
     using KIPRO.BIM.RevitPlugin.Properties;
     using System.Drawing;
-    using System.Linq;
-    using System.Text;
 
     public class App : IExternalApplication
     {
         static AddInId addinId = new AddInId(new Guid("CDE4EA5A-2933-430B-926B-82BEA5E3A069"));
-        private string logDirectory;
 
         public Result OnStartup(UIControlledApplication application)
         {
-            // Загрузка пути из файла настроек
-            logDirectory = UserSettingsHelper.Load().LogDirectory;
-
             // Сбор логов при запуске Revit
-            if (!Directory.Exists(logDirectory)) Directory.CreateDirectory(logDirectory);
             application.ControlledApplication.DocumentChanged += LoggingOnDocumentChanged;
 
             // Создание панели с кнопочками
@@ -194,7 +187,10 @@
             string logFileName = $"{projectName}_{userName}_{DateTime.Now:yyyy-MM-dd}.log";
 
             string logEntry = $"{datetime},{type},{userName},{elementInfo}";
-            File.AppendAllText(Path.Combine(logDirectory, projectName, logFileName), logEntry + Environment.NewLine);
+
+            var projectLogFolder = Path.Combine(UserSettingsHelper.Load().LogDirectory, projectName);
+            if (!Directory.Exists(projectLogFolder)) Directory.CreateDirectory(projectLogFolder);
+            File.AppendAllText(Path.Combine(projectLogFolder, logFileName), logEntry + Environment.NewLine);
         }
 
         private BitmapImage LoadBitmapImageFromResources(Bitmap resource, int width, int height)
